@@ -46,7 +46,7 @@
                   </Group>
                   <EmptySpace pref="180" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="jButton1" max="32767" attributes="0"/>
+                      <Component id="ToDosFormViewButton" max="32767" attributes="0"/>
                       <Component id="jButton2" pref="123" max="32767" attributes="0"/>
                       <Component id="jButton3" max="32767" attributes="0"/>
                       <Component id="jButton4" max="32767" attributes="0"/>
@@ -64,7 +64,7 @@
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Component id="jScrollPane1" min="-2" pref="298" max="-2" attributes="0"/>
                       <Group type="102" attributes="0">
-                          <Component id="jButton1" max="32767" attributes="0"/>
+                          <Component id="ToDosFormViewButton" max="32767" attributes="0"/>
                           <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
                           <Component id="jButton2" min="-2" pref="36" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
@@ -139,7 +139,7 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JButton" name="jButton1">
+        <Component class="javax.swing.JButton" name="ToDosFormViewButton">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="33" green="0" red="0" type="rgb"/>
@@ -158,7 +158,7 @@
             <Property name="name" type="java.lang.String" value="ViewButton" noResource="true"/>
           </Properties>
           <Events>
-            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jButton1MouseClicked"/>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="ToDosFormViewButtonMouseClicked"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="jButton2">
