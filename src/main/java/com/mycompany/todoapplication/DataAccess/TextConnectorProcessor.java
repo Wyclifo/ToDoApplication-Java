@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Date;
 
 /**
  *
@@ -51,9 +52,15 @@ List<ToDo> output=new ArrayList<>();
 
 for(String line:lines){
    
+    String [] cols=line.split(",");
+    ToDo todo=new ToDo(cols[1],cols[2],new Date(cols[3]), new Date(cols[4]));
+    
+    todo.setID(Long.parseLong(cols[0]));
+    output.add(todo);
+    
     
 }
 
-        return null;
+        return output;
     }
 }
