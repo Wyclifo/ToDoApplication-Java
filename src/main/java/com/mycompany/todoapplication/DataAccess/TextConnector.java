@@ -5,12 +5,15 @@
 package com.mycompany.todoapplication.DataAccess;
 
 import com.mycompany.todoapplication.ToDo;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  *
  * @author Wyclif
  */
 public class TextConnector implements IDataConnection {
+    private final String TODOFILE="ToDoModel.csv";
 
     /**
      *
@@ -19,14 +22,21 @@ public class TextConnector implements IDataConnection {
      */
     @Override
     public ToDo createToDo(ToDo todo) {
-// TODO        Load the text file
-//TODO Convert the text to list of Todo Model
-//TODO Find The ID
-//TODO Add the New record with new ID
-//TODO Convert  the ToDo to List of Strings
-//TODO Save the list of Strings to a text files
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    
+
+ List<ToDo> todolist= TextConnectorProcessor.ConvertToToDoModel(TextConnectorProcessor.LoadFile(TextConnectorProcessor.fulFilePath(TODOFILE)));
+   Comparator<ToDo> c=(a,b)->Long.compare(a.getID(), b.getID());
+   todolist.sort(c);
+  if(!todolist.isEmpty()){
+    todo.setID(todolist.getFirst().getID()+1 );  
+  }else{
+      todo.setID(1);
+  }
+
+ 
+ todolist.add(todo);
+ TextConnectorProcessor.SaveToToDoModel(todolist, TODOFILE);
+ return todo;
+       
     }
     
 }
