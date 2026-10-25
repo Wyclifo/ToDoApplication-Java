@@ -14,7 +14,7 @@ import com.mycompany.todoapplication.TodoApplicationUI.CreateToDoForm;
 public class ToDoApplication {
 
     public static void main(String[] args) {
-        GlobalConfig.InitializeConnection(false, true);
+        GlobalConfig.InitializeConnection(true, true);
         java.awt.EventQueue.invokeLater(() -> {
             new CreateToDoForm().setVisible(true);
         });

@@ -5,6 +5,7 @@
 package com.mycompany.todoapplication.DataAccess;
 
 import com.mycompany.todoapplication.ToDo;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class TextConnector implements IDataConnection {
      */
     @Override
     public ToDo createToDo(ToDo todo) {
+        System.out.println("Data saved to text");
 
  List<ToDo> todolist= TextConnectorProcessor.ConvertToToDoModel(TextConnectorProcessor.LoadFile(TextConnectorProcessor.fulFilePath(TODOFILE)));
    Comparator<ToDo> c=(a,b)->Long.compare(a.getID(), b.getID());
@@ -38,5 +40,29 @@ public class TextConnector implements IDataConnection {
  return todo;
        
     }
-    
+
+    @Override
+    public List<ToDo> getToDos() {
+ 
+        System.out.println("Reading from text");
+    try {
+
+        String filePath =
+                TextConnectorProcessor.fulFilePath("ToDoModel.csv");
+
+        List<String> lines =
+                TextConnectorProcessor.LoadFile(filePath);
+
+        return TextConnectorProcessor.ConvertToToDoModel(lines);
+
+    } catch (Exception ex) {
+
+        ex.printStackTrace();
+
+        return new ArrayList<>();
+    }
 }
+    
+ }
+    
+

@@ -4,6 +4,7 @@
  */
 package com.mycompany.todoapplication.DataAccess;
 
+import com.mycompany.todoapplication.ToDo;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,4 +28,38 @@ connection.add(text);
     }
 
   
+    public static List<ToDo> getToDos() {
+
+        // Prefer SQL as the read source
+        for (IDataConnection connection : GlobalConfig.connection) {
+
+            if (connection instanceof SqlConnector) {
+
+                try {
+                    return connection.getToDos();
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+
+                    // Continue and try the text source
+                }
+            }
+        }
+
+        // Fallback to text
+        for (IDataConnection connection : GlobalConfig.connection) {
+
+            if (connection instanceof TextConnector) {
+
+                try {
+                    return connection.getToDos();
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+
+        return new ArrayList<>();
+    }
 }

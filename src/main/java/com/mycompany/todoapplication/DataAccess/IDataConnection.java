@@ -5,6 +5,7 @@
 package com.mycompany.todoapplication.DataAccess;
 
 import com.mycompany.todoapplication.ToDo;
+import java.util.List;
 
 /**
  *
@@ -12,5 +13,5 @@ import com.mycompany.todoapplication.ToDo;
  */
 public interface IDataConnection {
    ToDo createToDo(ToDo todo);
-    
+   List<ToDo> getToDos() ;
 }

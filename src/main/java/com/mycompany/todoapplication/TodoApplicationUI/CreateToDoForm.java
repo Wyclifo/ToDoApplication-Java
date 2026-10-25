@@ -7,7 +7,16 @@ package com.mycompany.todoapplication.TodoApplicationUI;
 import com.mycompany.todoapplication.DataAccess.GlobalConfig;
 import com.mycompany.todoapplication.DataAccess.IDataConnection;
 import com.mycompany.todoapplication.ToDo;
+import java.awt.HeadlessException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -18,8 +27,12 @@ public class CreateToDoForm extends javax.swing.JFrame {
     /**
      * Creates new form CreateToDoForm
      */
+    private static final DateTimeFormatter DATE_TIME_FORMATTER =
+        DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    private List<ToDo> loadedTodos= new ArrayList();
     public CreateToDoForm() {
         initComponents();
+        loadTodos();
     }
 
     /**
@@ -96,6 +109,11 @@ public class CreateToDoForm extends javax.swing.JFrame {
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
         jButton2.setText("View");
         jButton2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setBackground(new java.awt.Color(255, 0, 0));
         jButton3.setForeground(new java.awt.Color(0, 0, 51));
@@ -225,51 +243,263 @@ public class CreateToDoForm extends javax.swing.JFrame {
     private void ToDoEndTimeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ToDoEndTimeActionPerformed
                                               
     // TODO add your handling code here:
+    
+    
+    String endTime = ToDoEndTime.getText().trim();
+
+    if (endTime.isEmpty()) {
+        JOptionPane.showMessageDialog(this, """
+                                            Please enter an end date and time.
+                                            
+                                            Format: dd/MM/yyyy HH:mm
+                                            Example: 25/10/2026 18:30""",
+                "End Time Required",
+                JOptionPane.WARNING_MESSAGE
+        );
+        return;
+    }
+
+    try {
+
+        LocalDateTime.parse(
+                endTime,
+                DATE_TIME_FORMATTER
+        );
+
+        // Valid input
+
+    } catch (DateTimeParseException ex) {
+
+        JOptionPane.showMessageDialog(this, """
+                                            Invalid end date/time.
+                                            
+                                            Please use:
+                                            dd/MM/yyyy HH:mm
+                                            
+                                            Example:
+                                            25/10/2026 18:30""",
+                "Invalid End Time",
+                JOptionPane.ERROR_MESSAGE
+        );
+
+        ToDoEndTime.requestFocusInWindow();
+        ToDoEndTime.selectAll();
+    }
     }//GEN-LAST:event_ToDoEndTimeActionPerformed
 
     private void ToDoStartTimeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ToDoStartTimeActionPerformed
   // TODO add your handling code here:
+   String startTime = ToDoStartTime.getText().trim();
+
+    if (startTime.isEmpty()) {
+        JOptionPane.showMessageDialog(this, """
+                                            Please enter a start date and time.
+                                            
+                                            Format: dd/MM/yyyy HH:mm
+                                            Example: 25/10/2026 16:30""",
+                "Start Time Required",
+                JOptionPane.WARNING_MESSAGE
+        );
+        return;
+    }
+
+    try {
+
+        LocalDateTime.parse(
+                startTime,
+                DATE_TIME_FORMATTER
+        );
+
+        // Valid input
+
+    } catch (DateTimeParseException ex) {
+
+        JOptionPane.showMessageDialog(this, """
+                                            Invalid start date/time.
+                                            
+                                            Please use:
+                                            dd/MM/yyyy HH:mm
+                                            
+                                            Example:
+                                            25/10/2026 16:30""",
+                "Invalid Start Time",
+                JOptionPane.ERROR_MESSAGE
+        );
+
+        ToDoStartTime.requestFocusInWindow();
+        ToDoStartTime.selectAll();
+    }
     }//GEN-LAST:event_ToDoStartTimeActionPerformed
 
     private void SubmitToDoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SubmitToDoButtonActionPerformed
         // TODO add your handling code here:
-        if(this.validateForm()){
-            ToDo todo=new ToDo(ToDoName.getText(),ToDoDescription.getText(),new Date(ToDoStartTime.getText()),new Date(ToDoEndTime.getText()));
-            if(! todo.getTime().getFullTime()){
-                
-                
-                
-                
-                 java.awt.EventQueue.invokeLater(() -> {
-                
-                 AlertDialogue dialog = new AlertDialogue(new javax.swing.JFrame(), true);
-               dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                @Override
-                public void windowClosing(java.awt.event.WindowEvent e) {
-                    System.exit(0);
-                }
-            });
-            dialog.setVisible(true);
-                
-             });
+    if (this.validateForm()) {
+
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        try {
+            LocalDateTime startDateTime =
+                    LocalDateTime.parse(
+                            ToDoStartTime.getText().trim(),
+                            formatter
+                    );
+
+            LocalDateTime endDateTime =
+                    LocalDateTime.parse(
+                            ToDoEndTime.getText().trim(),
+                            formatter
+                    );
+
+            Date startTime = Date.from(
+                    startDateTime
+                            .atZone(ZoneId.systemDefault())
+                            .toInstant()
+            );
+
+            Date endTime = Date.from(
+                    endDateTime
+                            .atZone(ZoneId.systemDefault())
+                            .toInstant()
+            );
+
+            ToDo todo = new ToDo(
+                    ToDoName.getText(),
+                    ToDoDescription.getText(),
+                    startTime,
+                    endTime
+            );
+
+            if (!todo.getTime().getFullTime()) {
+
+                java.awt.EventQueue.invokeLater(() -> {
+                    AlertDialogue dialog =
+                            new AlertDialogue(new javax.swing.JFrame(), true);
+
+                    dialog.addWindowListener(
+                            new java.awt.event.WindowAdapter() {
+                                @Override
+                                public void windowClosing(
+                                        java.awt.event.WindowEvent e) {
+                                    System.exit(0);
+                                }
+                            }
+                    );
+
+                    dialog.setVisible(true);
+                });
             }
-            for(IDataConnection connection:GlobalConfig.connection){
-                connection.createToDo(todo);
-            }
-        } else {
-                       java.awt.EventQueue.invokeLater(() -> {      
-                 AlertDialogue dialog = new AlertDialogue(new javax.swing.JFrame(), true);
-               dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                @Override
-                public void windowClosing(java.awt.event.WindowEvent e) {
-                    System.exit(0);
-                }
-            });
-            dialog.setVisible(true);
-              });
+
+        
+boolean savedAtLeastOnce = false;
+StringBuilder errors = new StringBuilder();
+
+for (IDataConnection connection : GlobalConfig.connection) {
+    String source = connection.getClass().getSimpleName();
+
+    try {
+        connection.createToDo(todo);
+
+        savedAtLeastOnce = true;
+        System.out.println("Todo saved using " + source);
+
+    } catch (Exception ex) {
+        System.err.println("Failed to save using " + source);
+        ex.printStackTrace();
+
+        errors.append(source)
+              .append(": ")
+              .append(ex.getMessage() == null
+                      ? ex.getClass().getSimpleName()
+                      : ex.getMessage())
+              .append("\n");
+    }
+}
+
+if (savedAtLeastOnce) {
+    JOptionPane.showMessageDialog(
+        this,
+        errors.isEmpty()
+            ? "Todo saved successfully."
+            : """
+              Todo saved to at least one source.
+              Other errors:
+              """ + errors,
+        "Save Result",
+        errors.isEmpty()
+            ? JOptionPane.INFORMATION_MESSAGE
+            : JOptionPane.WARNING_MESSAGE
+    );
+
+    loadTodos();
+
+} else {
+    JOptionPane.showMessageDialog(
+        this,
+        "Todo could not be saved to any source.\n" + errors,
+        "Save Error",
+        JOptionPane.ERROR_MESSAGE
+    );
+}
+
+
+        } catch (DateTimeParseException ex) {
+
+            javax.swing.JOptionPane.showMessageDialog(this, """
+                                                            Invalid date/time.
+                                                            
+                                                            Use the format:
+                                                            dd/MM/yyyy HH:mm
+                                                            
+                                                            Example:
+                                                            25/10/2026 16:30""",
+                    "Invalid Date/Time",
+                    javax.swing.JOptionPane.ERROR_MESSAGE
+            );
         }
+    
+    } else {
+
+        java.awt.EventQueue.invokeLater(() -> {
+
+            AlertDialogue dialog =
+                    new AlertDialogue(new javax.swing.JFrame(), true);
+
+//            dialog.addWindowListener(
+//                    new java.awt.event.WindowAdapter() {
+//                        @Override
+//                        public void windowClosing(
+//                                java.awt.event.WindowEvent e) {
+//                            System.exit(0);
+//                        }
+//                    }
+//            );
+
+            dialog.setVisible(true);
+        });
+    }
             
     }//GEN-LAST:event_SubmitToDoButtonActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+            int selectedIndex = jList1.getSelectedIndex();
+    if (selectedIndex == -1) {
+
+        JOptionPane.showMessageDialog(
+                this,
+                "Please select a Todo to view.",
+                "No Todo Selected",
+                JOptionPane.WARNING_MESSAGE
+        );
+
+        return;
+    }
+
+    ToDo selectedTodo = loadedTodos.get(selectedIndex);
+    showTodoDetails(selectedTodo);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
 
     /**
      * @param args the command line arguments
@@ -328,4 +558,75 @@ public class CreateToDoForm extends javax.swing.JFrame {
     private boolean validateForm() {
      return !(ToDoEndTime.getText().isBlank()||ToDoStartTime.getText().isBlank()||ToDoDescription.getText().isBlank()||ToDoName.getText().isBlank());
     }
+    
+    private void loadTodos() {
+
+    try {
+
+        loadedTodos = GlobalConfig.getToDos();
+
+        DefaultListModel<String> model =
+                new DefaultListModel<>();
+
+        for (ToDo todo : loadedTodos) {
+
+            model.addElement(
+                    todo.getID()
+                    + " - "
+                    + todo.getName()
+            );
+        }
+
+        jList1.setModel(model);
+
+    } catch (Exception ex) {
+
+        ex.printStackTrace();
+
+        JOptionPane.showMessageDialog(
+                this,
+                "Unable to load Todos.",
+                "Load Error",
+                JOptionPane.ERROR_MESSAGE
+        );
+    }
+}
+
+    private void showTodoDetails(ToDo todo) {
+
+    DateTimeFormatter formatter =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+    String startTime =
+            todo.getTime()
+                    .getStartTime()
+                    .toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .format(formatter);
+
+    String endTime =
+            todo.getTime()
+                    .getEndTime()
+                    .toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .format(formatter);
+
+    String message =
+            "Todo ID: " + todo.getID()
+            + "\n\n"
+            + "Name: " + todo.getName()
+            + "\n\n"
+            + "Description: " + todo.getDescription()
+            + "\n\n"
+            + "Start Time: " + startTime
+            + "\n"
+            + "End Time: " + endTime;
+
+    JOptionPane.showMessageDialog(
+            this,
+            message,
+            "Todo Details",
+            JOptionPane.INFORMATION_MESSAGE
+    );
+}
 }
